@@ -1,3 +1,6 @@
+using asp.net_workshop_real_app_public.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace asp.net_workshop_real_app_public
 {
     public class Program
@@ -7,7 +10,9 @@ namespace asp.net_workshop_real_app_public
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddDbContext<BookstoreContext>(
+                options => options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("WorkshopRealAPIPublic")));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
