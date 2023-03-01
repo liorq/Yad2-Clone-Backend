@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<BookModel>? Books { get; set; }
+        public IList<BookModel>? Books { get; set; }
     }
 }

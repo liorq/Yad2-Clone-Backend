@@ -35,7 +35,7 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.BookModel", b =>
@@ -61,7 +61,7 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.BookModel", b =>
