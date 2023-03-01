@@ -1,4 +1,5 @@
 using asp.net_workshop_real_app_public.Data;
+using asp.net_workshop_real_app_public.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace asp.net_workshop_real_app_public
@@ -13,7 +14,11 @@ namespace asp.net_workshop_real_app_public
             builder.Services.AddDbContext<BookstoreContext>(
                 options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("WorkshopRealAPIPublic")));
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(opt => 
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            builder.Services.AddTransient<IBooksRepository, BooksRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -28,6 +33,7 @@ namespace asp.net_workshop_real_app_public
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
 
             app.UseAuthorization();
 
