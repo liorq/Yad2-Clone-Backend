@@ -18,6 +18,13 @@ namespace asp.net_workshop_real_app_public.Repositories
             return books;
         }
 
+        public async Task<BookModel> GetBookById(int id)
+        {
+            /*var book = await _context.Books.FindAsync(id);*/
+            var book = await _context.Books.Include(b => b.Author).Where(b => b.Id == id).FirstOrDefaultAsync();
+            return book;
+        }
+
         // תרגיל - תכתבו פונקציה (ותיישמו אותה) שמחזירה רשומה אחת בלבד לפי המזהה הייחודי
     }
 }

@@ -25,5 +25,16 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBookById([FromRoute] int id)
+        {
+            var res = await _booksRepository.GetBookById(id);
+            if (res == null)
+            {
+                return NotFound();
+            }
+            return Ok(res);
+        }
     }
 }
