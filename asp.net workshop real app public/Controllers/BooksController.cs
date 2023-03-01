@@ -1,5 +1,6 @@
 ﻿using asp.net_workshop_real_app_public.Models;
 using asp.net_workshop_real_app_public.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class BooksController : ControllerBase
     {
         private readonly IBooksRepository _booksRepository;
@@ -18,6 +20,7 @@ namespace asp.net_workshop_real_app_public.Controllers
         }
 
         [HttpGet("")]
+        [Authorize]
         public async Task<IActionResult> GetAllBooks()
         {
             var res = await _booksRepository.GetAllBooksAsync();
