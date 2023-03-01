@@ -8,6 +8,7 @@ namespace asp.net_workshop_real_app_public.Data
         {
         }
         public DbSet<BookModel> Books { get; set; }
+        public DbSet<AuthorModel> Authors { get; set; }
         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=.;Database=WorkShopRealAPIPublic;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=False");
