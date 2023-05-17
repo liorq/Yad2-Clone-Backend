@@ -6,5 +6,6 @@ namespace asp.net_workshop_real_app_public.Repositories
     {
 
         public Task<IEnumerable<Apartment>> GetAllapartmentsAsync();
+        public Task<bool>  addApartmentAsync(Apartment a);
     }
 }

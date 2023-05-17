@@ -19,7 +19,13 @@ namespace asp.net_workshop_real_app_public.Repositories
             var apartments = await _context.Apartments.ToListAsync();
             return apartments;
         }
+        public async Task<bool> addApartmentAsync(Apartment a)
+        {
+            await _context.Apartments.AddAsync(a);
+            int isSuccessToAdd = await _context.SaveChangesAsync();
 
+            return isSuccessToAdd > 0;
+        } 
 
 
     }

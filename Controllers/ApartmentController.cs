@@ -27,5 +27,33 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("No apartments to display.");
         }
+
+
+        [HttpPost("")]
+
+        public async Task<IActionResult> addApartment()
+        {
+            var res = await _apartmentRepository.addApartmentAsync();
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments to display.");
+        }
+
+
+
+
+        [HttpGet("")]
+
+        public async Task<IActionResult> GetLikedapartments()
+        {
+            var res = await _apartmentRepository.GetAllapartmentsAsync();
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments to display.");
+        }
     }
 }
