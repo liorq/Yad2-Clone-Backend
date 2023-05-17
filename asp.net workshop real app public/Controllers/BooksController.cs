@@ -9,7 +9,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class BooksController : ControllerBase
     {
         private readonly IBooksRepository _booksRepository;
@@ -24,7 +24,7 @@ namespace asp.net_workshop_real_app_public.Controllers
         public async Task<IActionResult> GetAllBooks()
         {
             var res = await _booksRepository.GetAllBooksAsync();
-            if(res?.Count > 0)
+            if (res?.Count > 0)
             {
                 return Ok(res);
             }
@@ -51,14 +51,14 @@ namespace asp.net_workshop_real_app_public.Controllers
                 return BadRequest();
             }
             /*return CreatedAtAction(nameof(GetBookById), new { id = id, controller = "books" }, newBookModel);*/
-            return CreatedAtAction(nameof(GetBookById), new { id = id, controller = "books" }, id);
+            return CreatedAtAction(nameof(GetBookById), new { id, controller = "books" }, id);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] NewBookModel newBookModel)
         {
             var book = await _booksRepository.UpdateBookAsync(id, newBookModel);
-            if(book == null)
+            if (book == null)
             {
                 return BadRequest();
             }

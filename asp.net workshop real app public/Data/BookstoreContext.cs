@@ -4,18 +4,14 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace asp.net_workshop_real_app_public.Data
 {
-    /*public class BookstoreContext : DbContext*/
-    public class BookstoreContext : IdentityDbContext<AppUser>
+    public class ApartementContext : IdentityDbContext<AppUser>
     {
-        public BookstoreContext(DbContextOptions<BookstoreContext> options):base(options)
+
+        public ApartementContext(DbContextOptions<ApartementContext> options) : base(options)
         {
         }
-        public DbSet<BookModel> Books { get; set; }
-        public DbSet<AuthorModel> Authors { get; set; }
-        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=.;Database=WorkShopRealAPIPublic;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=False");
-            base.OnConfiguring(optionsBuilder);
-        }*/
+
+        public DbSet<Apartment> Apartments { get; set; }
+
     }
 }
