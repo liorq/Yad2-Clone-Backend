@@ -16,11 +16,11 @@ namespace asp.net_workshop_real_app_public
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<BookstoreContext>(
+            builder.Services.AddDbContext<ApartementContext>(
                 options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("WorkshopRealAPIPublic")));
             builder.Services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<BookstoreContext>()
+                .AddEntityFrameworkStores<ApartementContext>()
                 .AddDefaultTokenProviders();
             builder.Services.AddAuthentication(option =>
             {
@@ -44,7 +44,8 @@ namespace asp.net_workshop_real_app_public
             {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            builder.Services.AddTransient<IBooksRepository, BooksRepository>();
+            builder.Services.AddTransient<IApartmentRepository, ApartmentRepository>();
+
             builder.Services.AddTransient<IAccountRepository, AccountRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
