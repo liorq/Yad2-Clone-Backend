@@ -22,6 +22,7 @@ namespace asp.net_workshop_real_app_public.Repositories
         public async Task<bool> addApartmentAsync(Apartment a)
         {
             await _context.Apartments.AddAsync(a);
+            a.apartmentId = Guid.NewGuid();
             int isSuccessToAdd = await _context.SaveChangesAsync();
 
             return isSuccessToAdd > 0;

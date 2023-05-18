@@ -46,6 +46,7 @@ namespace asp.net_workshop_real_app_public.Controllers
         public async Task<IActionResult> addLikedApartment([FromBody] Apartment a)
         {
             bool isAddSucced = await _apartmentRepository.addApartmentAsync(a);
+ 
             if (isAddSucced)
             {
                 return Ok();

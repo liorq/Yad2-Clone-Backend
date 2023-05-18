@@ -3,7 +3,6 @@
     public class Apartment
     {
         public Guid apartmentId { get; set; }
-
         public string name { get; set; }
         public string category { get; set; }
         public string street { get; set; }
@@ -20,6 +19,20 @@
         public bool hasCentralAirConditioning { get; set; }
         public bool hasFurniture { get; set; }
         public bool isResidentialUnit { get; set; }
+        public bool agreedToGetUpdates { get; set; }
+        public string totalSquareFootage { get; set; }
+        public string city { get; set; }
+        public string conditionOfProperty { get; set; }
+        public string des { get; set; }
+        public string email { get; set; }
+        public string floor { get; set; }
+        public string houseNumber { get; set; }
+        public bool immediate { get; set; }
+        public int parking { get; set; }
+        public string personName { get; set; }
+        public int porch { get; set; }
+        public string roomNumber { get; set; }
+        public string totalFloorInBuilding { get; set; }
+        public string typeOfProperty { get; set; }
     }
-
 }
