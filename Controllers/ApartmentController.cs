@@ -3,6 +3,7 @@ using asp.net_workshop_real_app_public.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace asp.net_workshop_real_app_public.Controllers
 {
@@ -11,10 +12,13 @@ namespace asp.net_workshop_real_app_public.Controllers
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentRepository _apartmentRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApartmentController(IApartmentRepository apartmentRepository)
+        public ApartmentController(IApartmentRepository apartmentRepository, IHttpContextAccessor httpContextAccessor)
         {
             _apartmentRepository = apartmentRepository;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         [HttpGet("")]
@@ -55,10 +59,9 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> addLikedApartment([FromBody] likedApartment la,bool isLiked)
         {
-            string email = User?.Identity?.Name;
-            la.email = email;
+            la.email = getUserNameByToken();
             Console.WriteLine("email");
-            Console.WriteLine(email);
+            Console.WriteLine(la.email);
             bool isAddSucced = await _apartmentRepository.toggleLikedApartment(la,isLiked);
  
             if (isAddSucced)
@@ -67,7 +70,17 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("Failed to add apartment");
         }
+        [HttpGet("token")]
+        public string? getUserNameByToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (token == "")
+                return "you dont have token send";
 
+            var handler = new JwtSecurityTokenHandler();
+            var decodedToken = handler.ReadJwtToken(token);
+            return decodedToken?.Claims?.ToArray()[0]?.Value;
+        }
 
 
     }
