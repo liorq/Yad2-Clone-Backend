@@ -28,12 +28,22 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("No apartments to display.");
         }
+        [HttpGet("{page}")]
 
+        public async Task<IActionResult> GetAllRangeApartments(int page)
+        {
+            var res = await _apartmentRepository.GetAllRangeApartments(page);
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments to display.");
+        }
 
         [HttpPost("")]
-
         public async Task<IActionResult> addApartment([FromBody] Apartment a)
         {
+            Console.WriteLine("hi");
             bool isAddSucced = await _apartmentRepository.addApartmentAsync(a);
             if (isAddSucced)
             {
@@ -41,15 +51,19 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("Failed to add apartment");
         }
-        [HttpPost("LikedApartment")]
+        [HttpPost("LikedApartment/{isLiked}")]
 
-        public async Task<IActionResult> addLikedApartment([FromBody] Apartment a)
+        public async Task<IActionResult> addLikedApartment([FromBody] likedApartment la,bool isLiked)
         {
-            bool isAddSucced = await _apartmentRepository.addApartmentAsync(a);
+            string email = User?.Identity?.Name;
+            la.email = email;
+            Console.WriteLine("email");
+            Console.WriteLine(email);
+            bool isAddSucced = await _apartmentRepository.toggleLikedApartment(la,isLiked);
  
             if (isAddSucced)
             {
-                return Ok();
+                return Ok("add succes");
             }
             return NotFound("Failed to add apartment");
         }

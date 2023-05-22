@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using asp.net_workshop_real_app_public.Data;
 
@@ -11,9 +12,11 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    partial class ApartementContextModelSnapshot : ModelSnapshot
+    [Migration("20230521190702_firstcddcjjeddegmsdv")]
+    partial class firstcddcjjeddegmsdv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,25 +333,6 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("apartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("likedApartments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
