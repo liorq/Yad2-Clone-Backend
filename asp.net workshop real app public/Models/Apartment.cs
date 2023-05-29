@@ -34,5 +34,6 @@
         public string? roomNumber { get; set; }
         public string? totalFloorInBuilding { get; set; }
         public string?   typeOfProperty { get; set; }
+        public string? dateOfEntering { get; set; }
     }
 }

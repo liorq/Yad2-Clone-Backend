@@ -47,7 +47,6 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("")]
         public async Task<IActionResult> addApartment([FromBody] Apartment a)
         {
-            Console.WriteLine("hi");
             bool isAddSucced = await _apartmentRepository.addApartmentAsync(a);
             if (isAddSucced)
             {
@@ -60,8 +59,6 @@ namespace asp.net_workshop_real_app_public.Controllers
         public async Task<IActionResult> addLikedApartment([FromBody] likedApartment la,bool isLiked)
         {
             la.email = getUserNameByToken();
-            Console.WriteLine("email");
-            Console.WriteLine(la.email);
             bool isAddSucced = await _apartmentRepository.toggleLikedApartment(la,isLiked);
  
             if (isAddSucced)
@@ -70,6 +67,28 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("Failed to add apartment");
         }
+
+
+
+        /// <summary>
+        /// SearchApartments
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpPost("SearchApartments")]
+        public async Task<IActionResult> SearchApartments([FromBody] Apartment a)
+        {
+            var apartmentCriteria = a.GetType().GetProperties().ToDictionary(p => p.Name, p => p.GetValue(a));
+
+            var result = await _apartmentRepository.SearchApartments(apartmentCriteria);
+            Console.WriteLine(result);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Failed to get apartments");
+        }
+
         [HttpGet("token")]
         public string? getUserNameByToken()
         {
