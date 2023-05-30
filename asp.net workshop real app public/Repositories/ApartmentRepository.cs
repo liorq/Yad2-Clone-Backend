@@ -20,7 +20,14 @@ namespace asp.net_workshop_real_app_public.Repositories
             var apartments = await _context.Apartments.ToListAsync();
             return apartments;
         }
+        public async Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email)
+        {
+            ///need to handle if i do one to many or not 
 
+            return null;
+            //var apartments = await _context.Apartments.Where().ToListAsync();
+            //return apartments;
+        }
 
 
         public async Task<IEnumerable<Apartment>> GetAllRangeApartments(int page)

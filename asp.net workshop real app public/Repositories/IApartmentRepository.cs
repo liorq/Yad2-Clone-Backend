@@ -10,6 +10,7 @@ namespace asp.net_workshop_real_app_public.Repositories
         public Task<IEnumerable<Apartment>> GetAllRangeApartments(int page);
         public Task<bool> toggleLikedApartment(likedApartment la, bool isLiked);
         public Task<List<Apartment>> SearchApartments(Dictionary<string, object> criteria);
+        public  Task<IEnumerable<Apartment>> GetMyApartmentsAsync();
 
     }
 }

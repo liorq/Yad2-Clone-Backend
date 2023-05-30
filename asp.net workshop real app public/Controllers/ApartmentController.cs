@@ -32,6 +32,20 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("No apartments to display.");
         }
+
+        [HttpGet("myApartments")]
+
+        public async Task<IActionResult> GetMyApartments()
+        {
+            var res = await _apartmentRepository.GetMyApartments();
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments to display.");
+        }
+
+
         [HttpGet("{page}")]
 
         public async Task<IActionResult> GetAllRangeApartments(int page)
