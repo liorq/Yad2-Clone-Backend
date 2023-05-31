@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "htvRxplrYycK9NOl5Xovcksh5zDDSnb0hKUTKC7AJ0C4rR3kuqFPzxno3eNzD11mh/RMck0XZEY6Y4WRpzcykg==",
+  "dgSpecHash": "FgEf1Easwe7MtuFRHViWPK8yPPkJcVPITt5LWbXkhAY/D4ZuvBiqSbtDhzy6MH2xXBBZMHmG9M6TUVRDXwxPOg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\moshe\\Source\\Repos\\asp.net-workshop-real-app-public-yad2\\asp.net workshop real app public\\asp.net workshop real app public.csproj",
+  "projectFilePath": "C:\\Users\\moshe\\source\\repos\\asp.net-workshop-real-app-public-yad2\\asp.net workshop real app public\\asp.net workshop real app public.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\moshe\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\moshe\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

@@ -6,9 +6,14 @@ namespace asp.net_workshop_real_app_public.Repositories
     {
 
         public Task<IEnumerable<Apartment>> GetAllapartmentsAsync();
-        public Task<bool>  addApartmentAsync(Apartment a);
+        public Task<bool>  addApartmentAsync(Apartment a, string email);
         public Task<IEnumerable<Apartment>> GetAllRangeApartments(int page);
-        public Task<bool> toggleLikedApartment(likedApartment la, bool isLiked);
-        
+        public Task<bool> toggleLikedApartment(bool isLiked, string email, Guid apartmentId);
+        public  Task<IEnumerable<Apartment>> SearchApartments(Dictionary<string, object> criteria);
+
+        public Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email);
+
+
+        public Task<IEnumerable<dynamic>> GetMyLikedApartmentsAsync(string email);
     }
 }

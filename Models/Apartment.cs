@@ -1,7 +1,13 @@
-﻿namespace asp.net_workshop_real_app_public.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace asp.net_workshop_real_app_public.Models
 {
     public class Apartment
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid apartmentId { get; set; }
         public string? name { get; set; }
         public string? category { get; set; }
@@ -34,5 +40,8 @@
         public string? roomNumber { get; set; }
         public string? totalFloorInBuilding { get; set; }
         public string?   typeOfProperty { get; set; }
+        public string? dateOfEntering { get; set; }
+
+        public AppUser? person { get; set; }
     }
 }

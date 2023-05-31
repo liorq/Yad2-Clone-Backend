@@ -173,6 +173,9 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("conditionOfProperty")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("dateOfEntering")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("des")
                         .HasColumnType("nvarchar(max)");
 
@@ -230,6 +233,9 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("parking")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("personName")
                         .HasColumnType("nvarchar(max)");
 
@@ -255,6 +261,8 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("apartmentId");
+
+                    b.HasIndex("personId");
 
                     b.ToTable("Apartments");
                 });
@@ -340,13 +348,20 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("apartmentId")
+                    b.Property<Guid?>("apartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("likedApartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("apartmentId");
+
+                    b.HasIndex("personId");
 
                     b.ToTable("likedApartments");
                 });
@@ -400,6 +415,35 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Apartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany("Apartments")
+                        .HasForeignKey("personId");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.Apartment", "apartment")
+                        .WithMany()
+                        .HasForeignKey("apartmentId");
+
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany()
+                        .HasForeignKey("personId");
+
+                    b.Navigation("apartment");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.AppUser", b =>
+                {
+                    b.Navigation("Apartments");
                 });
 #pragma warning restore 612, 618
         }

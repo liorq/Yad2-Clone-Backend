@@ -3,6 +3,7 @@ using asp.net_workshop_real_app_public.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace asp.net_workshop_real_app_public.Controllers
@@ -32,6 +33,35 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("No apartments to display.");
         }
+
+        [HttpGet("myApartments")]
+
+        public async Task<IActionResult> GetMyApartments()
+        {
+
+            var res = await _apartmentRepository.GetMyApartmentsAsync(getUserNameByToken());
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments to display.");
+        }
+
+
+
+        [HttpPost("myApartments/likedApartments")]
+        public async Task<IActionResult> GetMyLikedApartments()
+        {
+            var res = await _apartmentRepository.GetMyLikedApartmentsAsync(getUserNameByToken());
+ 
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return NotFound("No apartments liked to display.");
+        }
+
+       
         [HttpGet("{page}")]
 
         public async Task<IActionResult> GetAllRangeApartments(int page)
@@ -47,22 +77,18 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("")]
         public async Task<IActionResult> addApartment([FromBody] Apartment a)
         {
-            Console.WriteLine("hi");
-            bool isAddSucced = await _apartmentRepository.addApartmentAsync(a);
+            bool isAddSucced = await _apartmentRepository.addApartmentAsync(a, getUserNameByToken());
             if (isAddSucced)
             {
                 return Ok();
             }
             return NotFound("Failed to add apartment");
         }
-        [HttpPost("LikedApartment/{isLiked}")]
+        [HttpPost("LikedApartment/{apartmentId}/{isLiked}")]
 
-        public async Task<IActionResult> addLikedApartment([FromBody] likedApartment la,bool isLiked)
+        public async Task<IActionResult> addLikedApartment(Guid apartmentId, bool isLiked)
         {
-            la.email = getUserNameByToken();
-            Console.WriteLine("email");
-            Console.WriteLine(la.email);
-            bool isAddSucced = await _apartmentRepository.toggleLikedApartment(la,isLiked);
+            bool isAddSucced = await _apartmentRepository.toggleLikedApartment(isLiked, getUserNameByToken(), apartmentId);
  
             if (isAddSucced)
             {
@@ -70,6 +96,24 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("Failed to add apartment");
         }
+
+
+
+
+        [HttpPost("SearchApartments")]
+        public async Task<IActionResult> SearchApartments([FromBody] Apartment a)
+        {
+            var apartmentCriteria = a.GetType().GetProperties().ToDictionary(p => p.Name, p => p.GetValue(a));
+
+            var result = await _apartmentRepository.SearchApartments(apartmentCriteria);
+            Console.WriteLine(result);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound("Failed to get apartments");
+        }
+
         [HttpGet("token")]
         public string? getUserNameByToken()
         {
