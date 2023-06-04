@@ -12,8 +12,8 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    [Migration("20230531111407_first")]
-    partial class first
+    [Migration("20230601112432_fefeffggr")]
+    partial class fefeffggr
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,8 +185,8 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("floor")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("floor")
+                        .HasColumnType("float");
 
                     b.Property<bool>("hasAccessibilityForDisabled")
                         .HasColumnType("bit");
@@ -215,8 +215,8 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<bool>("hasWindowBars")
                         .HasColumnType("bit");
 
-                    b.Property<string>("houseNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("houseNumber")
+                        .HasColumnType("float");
 
                     b.Property<bool>("immediate")
                         .HasColumnType("bit");
@@ -245,20 +245,20 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("porch")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("price")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("price")
+                        .HasColumnType("float");
 
-                    b.Property<string>("roomNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("roomNumber")
+                        .HasColumnType("float");
 
                     b.Property<string>("street")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("totalFloorInBuilding")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalFloorInBuilding")
+                        .HasColumnType("float");
 
-                    b.Property<string>("totalSquareFootage")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalSquareFootage")
+                        .HasColumnType("float");
 
                     b.Property<string>("typeOfProperty")
                         .HasColumnType("nvarchar(max)");

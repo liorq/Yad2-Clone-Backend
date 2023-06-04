@@ -24,7 +24,7 @@ namespace asp.net_workshop_real_app_public.Repositories
         }
         public async Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email)
         {
-            var apartments = await _context.Apartments.Include(a=>a.person).Where(p=>p.email==email).ToListAsync();
+            var apartments = await _context.Apartments.Where(a=>a.person.Email==email).Include(a=>a.person).ToListAsync();
 
             return apartments;
 
@@ -93,7 +93,15 @@ namespace asp.net_workshop_real_app_public.Repositories
             }
         }
 
-
+        public async Task<bool> removeApartmentAsync(Apartment a)
+        {
+            var apartment = await _context.Apartments.FirstOrDefaultAsync(apartment => apartment.apartmentId == a.apartmentId);
+      
+             _context.Apartments.Remove(apartment);
+            await _context.SaveChangesAsync();
+            return true;
+        
+        }
         public async Task<bool> addApartmentAsync(Apartment a,string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -115,31 +123,83 @@ namespace asp.net_workshop_real_app_public.Repositories
             return likedApartments;
         }
 
-        public async Task<IEnumerable<Apartment>> SearchApartments(Dictionary<string, object> criteria)
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment)
         {
-            var apartments=await _context.Apartments.ToListAsync();
-            return  apartments.Where(apt =>
+            Console.WriteLine("hello");
+
+                int counter = 0;
+            var apartments = await _context.Apartments.ToListAsync();
+            this.printObjectProperties(apartment);
+            return apartments.Where(a =>
             {
-                return criteria.Keys.All(key =>
+                if (counter < 1)
                 {
-                    if (criteria[key] is bool)
-                    {
-                        return (bool)apt.GetType().GetProperty(key)?.GetValue(apt) == (bool)criteria[key];
-                    }
-                    if (criteria[key] is int)
-                    {
-                        return apt.GetType().GetProperty(key)?.GetValue(apt) != null &&
-                               (int)apt.GetType().GetProperty(key)?.GetValue(apt) <= (int)criteria[key];
-                    }
-                    if (key != "apartmentId" && criteria[key] is string)
-                    {
-                        return apt.GetType().GetProperty(key)?.GetValue(apt)?.ToString()?.ToLower().Contains(criteria[key]?.ToString()?.ToLower()) ?? false;
-                    }
-                    return true;
-                });
-            }).ToList();
+                counter++;
+                this.printObjectProperties(a);
+
+                }
+                //this.printObjectProperties(a);
+                ////לשים סוגריים עגולים כדי למנוע שגיאות 
+                bool condition =(( a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture)&&
+                    //a.hasKosherKitchen == apaptment.hasKosherKitchen &&
+                    //a.hasCentralAirConditioning == apaptment.hasCentralAirConditioning &&
+                   ( (a.hasElevator == apartment.hasElevator )|| !apartment.hasElevator) &&
+                   (( a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning )&&
+                   ( (a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars )&&
+                    ((a.isRenovated == apartment.isRenovated) || !apartment.isRenovated )&&
+                    //a.isSmartHome == apaptment.isSmartHome &&
+                    ((a.hasStorage == apartment.hasStorage) || !apartment.hasStorage )&&
+                    //a.hasSolarHeater == apaptment.hasSolarHeater &&
+                    ((a.hasAccessibilityForDisabled == apartment.hasAccessibilityForDisabled) || !apartment.hasAccessibilityForDisabled) &&
+                    //a.isResidentialUnit == apaptment.isResidentialUnit &&
+                   ( (a.totalSquareFootage >= apartment.minSqm) || apartment.minSqm==0) &&
+                    ((a.totalSquareFootage <= apartment.maxSqm) || apartment.maxSqm == 0 )&&
+                    (a.floor >= apartment.minFloor || apartment.minFloor == 0) &&
+                    ( a.floor <= apartment.maxFloor || apartment.maxFloor == 0) &&
+                    ((a.price >= apartment.minPrice) || apartment.minPrice == 0 )&&
+                    ((a.price <= apartment.maxPrice) || apartment.maxPrice == 0) &&
+                    ((a.roomNumber >= apartment.minRooms)|| apartment.minRooms==0 )&&
+                    ((a.roomNumber <= apartment.maxRooms)|| apartment.maxRooms==0);
+
+                if (condition)
+                {
+                    Console.WriteLine($"Apartment: {a.apartmentId} meets the criteria");
+                }
+                else
+                    Console.WriteLine($"Apartment: {a.apartmentId}not meets the criteria");
+
+
+                return condition;
+            });
         }
 
 
+
+        //public string? conditionOfProperty { get; set; }
+        //public bool immediate { get; set; }
+        //public string? parking { get; set; }
+        //public string? personName { get; set; }
+        //public string? porch { get; set; }
+        //public double? totalFloorInBuilding { get; set; }
+        //public string? typeOfProperty { get; set; }
+        //public string? dateOfEntering { get; set; }
+
+        //public string? freeSearchText { get; set; }
+        public void printObjectProperties(object obj)
+    {
+        var type = obj.GetType();
+        var properties = type.GetProperties();
+
+        foreach (var property in properties)
+        {
+            var key = property.Name;
+            var value = property.GetValue(obj);
+
+            Console.WriteLine($"{key}: {value}");
+        }
     }
+
+
+    }
+   
 }

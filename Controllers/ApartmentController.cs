@@ -38,7 +38,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> GetMyApartments()
         {
-
+            Console.WriteLine(getUserNameByToken());
             var res = await _apartmentRepository.GetMyApartmentsAsync(getUserNameByToken());
             if (res != null && res.Any())
             {
@@ -47,8 +47,16 @@ namespace asp.net_workshop_real_app_public.Controllers
             return NotFound("No apartments to display.");
         }
 
-
-
+        [HttpDelete("removeApartments")]
+        public async Task<IActionResult> removeApartment([FromBody] Apartment a)
+        {
+            bool isAddSucced = await _apartmentRepository.removeApartmentAsync(a);
+            if (isAddSucced)
+            {
+                return Ok();
+            }
+            return NotFound("Failed to remove apartment");
+        }
         [HttpPost("myApartments/likedApartments")]
         public async Task<IActionResult> GetMyLikedApartments()
         {
@@ -61,7 +69,7 @@ namespace asp.net_workshop_real_app_public.Controllers
             return NotFound("No apartments liked to display.");
         }
 
-       
+
         [HttpGet("{page}")]
 
         public async Task<IActionResult> GetAllRangeApartments(int page)
@@ -99,15 +107,13 @@ namespace asp.net_workshop_real_app_public.Controllers
 
 
 
-
         [HttpPost("SearchApartments")]
-        public async Task<IActionResult> SearchApartments([FromBody] Apartment a)
+        public async Task<IActionResult> SearchApartments([FromBody] ApartmentSearchQuery apartmentSearchQuery)
         {
-            var apartmentCriteria = a.GetType().GetProperties().ToDictionary(p => p.Name, p => p.GetValue(a));
 
-            var result = await _apartmentRepository.SearchApartments(apartmentCriteria);
-            Console.WriteLine(result);
-            if (result != null)
+            var result = await _apartmentRepository.SearchApartments(apartmentSearchQuery);
+
+            if (result != null && result.Any())
             {
                 return Ok(result);
             }

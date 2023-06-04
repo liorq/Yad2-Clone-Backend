@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace asp.networkshoprealapppublic.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class fefeffggr : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -81,7 +81,7 @@ namespace asp.networkshoprealapppublic.Migrations
                     name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    price = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    price = table.Column<double>(type: "float", nullable: true),
                     hasAirConditioning = table.Column<bool>(type: "bit", nullable: false),
                     hasWindowBars = table.Column<bool>(type: "bit", nullable: false),
                     hasElevator = table.Column<bool>(type: "bit", nullable: false),
@@ -95,19 +95,19 @@ namespace asp.networkshoprealapppublic.Migrations
                     hasFurniture = table.Column<bool>(type: "bit", nullable: false),
                     isResidentialUnit = table.Column<bool>(type: "bit", nullable: false),
                     agreedToGetUpdates = table.Column<bool>(type: "bit", nullable: false),
-                    totalSquareFootage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    totalSquareFootage = table.Column<double>(type: "float", nullable: true),
                     city = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     conditionOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     des = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    floor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    houseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    floor = table.Column<double>(type: "float", nullable: true),
+                    houseNumber = table.Column<double>(type: "float", nullable: true),
                     immediate = table.Column<bool>(type: "bit", nullable: false),
                     parking = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     personName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     porch = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    roomNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    totalFloorInBuilding = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    roomNumber = table.Column<double>(type: "float", nullable: true),
+                    totalFloorInBuilding = table.Column<double>(type: "float", nullable: true),
                     typeOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     dateOfEntering = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     personId = table.Column<string>(type: "nvarchar(450)", nullable: true)
