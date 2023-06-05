@@ -12,5 +12,8 @@
         public double? maxRooms { get; set; } = 0;
         public double? maxFloor { get; set; } = 0;
         public double? maxSqm { get; set; } = 0;
+        public string[]? arrayOfTypeProperty { get; set; }
+  
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using asp.net_workshop_real_app_public.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,12 +13,15 @@ namespace asp.net_workshop_real_app_public.Repositories
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountRepository(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
+        public AccountRepository(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<IdentityResult> SignUp(SignupModel signupModel)
@@ -43,7 +47,36 @@ namespace asp.net_workshop_real_app_public.Repositories
             string token = NewToken(loginModel.Email);
             return token;
         }
+        public async Task<bool> updateUserInfo(UserUpdateRequest user,string email)
+        {
+            var result=await _userManager.FindByEmailAsync(email);
+            result.PhoneNumber = user.Phone;
+            result.FirstName = user.FirstName;
+            result.LastName = user.LastName;
+            result.City=user.City;
+            result.StreetName = user.StreetName;
+            result.HouseNumber = user.HouseNumber;
+            result.BirthDate = user.BirthDate;
 
+            return true;
+
+    }
+        public string? getUserNameByToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (token == "")
+                return "you dont have token send";
+
+            var handler = new JwtSecurityTokenHandler();
+            var decodedToken = handler.ReadJwtToken(token);
+            return decodedToken?.Claims?.ToArray()[0]?.Value;
+        }
+        public async Task<bool> getUserObject()
+        {
+            string email = getUserNameByToken();
+            var res = await _userManager.FindByEmailAsync(email);
+            return true;
+        }
         private string NewToken(string email)
         {
             var authClaims = new List<Claim>
@@ -62,5 +95,7 @@ namespace asp.net_workshop_real_app_public.Repositories
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
     }
 }

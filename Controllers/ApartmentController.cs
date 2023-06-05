@@ -14,11 +14,13 @@ namespace asp.net_workshop_real_app_public.Controllers
     {
         private readonly IApartmentRepository _apartmentRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAccountRepository _accountRepository;
 
-        public ApartmentController(IApartmentRepository apartmentRepository, IHttpContextAccessor httpContextAccessor)
+        public ApartmentController(IAccountRepository accountRepository,IApartmentRepository apartmentRepository, IHttpContextAccessor httpContextAccessor)
         {
             _apartmentRepository = apartmentRepository;
             _httpContextAccessor = httpContextAccessor;
+            _accountRepository = accountRepository;
 
         }
 
@@ -38,8 +40,9 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> GetMyApartments()
         {
-            Console.WriteLine(getUserNameByToken());
-            var res = await _apartmentRepository.GetMyApartmentsAsync(getUserNameByToken());
+
+            string email =  _accountRepository.getUserNameByToken();
+                var res = await _apartmentRepository.GetMyApartmentsAsync(email);
             if (res != null && res.Any())
             {
                 return Ok(res);
@@ -60,7 +63,9 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("myApartments/likedApartments")]
         public async Task<IActionResult> GetMyLikedApartments()
         {
-            var res = await _apartmentRepository.GetMyLikedApartmentsAsync(getUserNameByToken());
+            string email = _accountRepository.getUserNameByToken();
+
+            var res = await _apartmentRepository.GetMyLikedApartmentsAsync(email);
  
             if (res != null && res.Any())
             {
@@ -85,7 +90,9 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("")]
         public async Task<IActionResult> addApartment([FromBody] Apartment a)
         {
-            bool isAddSucced = await _apartmentRepository.addApartmentAsync(a, getUserNameByToken());
+            string email = _accountRepository.getUserNameByToken();
+
+            bool isAddSucced = await _apartmentRepository.addApartmentAsync(a, email);
             if (isAddSucced)
             {
                 return Ok();
@@ -96,7 +103,9 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> addLikedApartment(Guid apartmentId, bool isLiked)
         {
-            bool isAddSucced = await _apartmentRepository.toggleLikedApartment(isLiked, getUserNameByToken(), apartmentId);
+            string email = _accountRepository.getUserNameByToken();
+
+            bool isAddSucced = await _apartmentRepository.toggleLikedApartment(isLiked, email, apartmentId);
  
             if (isAddSucced)
             {
@@ -120,17 +129,17 @@ namespace asp.net_workshop_real_app_public.Controllers
             return NotFound("Failed to get apartments");
         }
 
-        [HttpGet("token")]
-        public string? getUserNameByToken()
-        {
-            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            if (token == "")
-                return "you dont have token send";
+        //[HttpGet("token")]
+        //public string? getUserNameByToken()
+        //{
+        //    var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        //    if (token == "")
+        //        return "you dont have token send";
 
-            var handler = new JwtSecurityTokenHandler();
-            var decodedToken = handler.ReadJwtToken(token);
-            return decodedToken?.Claims?.ToArray()[0]?.Value;
-        }
+        //    var handler = new JwtSecurityTokenHandler();
+        //    var decodedToken = handler.ReadJwtToken(token);
+        //    return decodedToken?.Claims?.ToArray()[0]?.Value;
+        //}
 
 
     }

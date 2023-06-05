@@ -42,5 +42,18 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return Ok(res);
         }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> updateUserInfo([FromBody] UserUpdateRequest user)
+        {
+            string email = _accountRepository.getUserNameByToken();
+
+            var res = await _accountRepository.updateUserInfo(user,email);
+            if (res)
+            {
+                return Ok();
+            }
+            return BadRequest("cannot chage");
+        }
     }
 }
