@@ -6,53 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace asp.networkshoprealapppublic.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class fefeffggr : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Apartments",
-                columns: table => new
-                {
-                    apartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    street = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    hasAirConditioning = table.Column<bool>(type: "bit", nullable: false),
-                    hasWindowBars = table.Column<bool>(type: "bit", nullable: false),
-                    hasElevator = table.Column<bool>(type: "bit", nullable: false),
-                    hasKosherKitchen = table.Column<bool>(type: "bit", nullable: false),
-                    hasSolarHeater = table.Column<bool>(type: "bit", nullable: false),
-                    hasAccessibilityForDisabled = table.Column<bool>(type: "bit", nullable: false),
-                    isRenovated = table.Column<bool>(type: "bit", nullable: false),
-                    isSmartHome = table.Column<bool>(type: "bit", nullable: false),
-                    hasStorage = table.Column<bool>(type: "bit", nullable: false),
-                    hasCentralAirConditioning = table.Column<bool>(type: "bit", nullable: false),
-                    hasFurniture = table.Column<bool>(type: "bit", nullable: false),
-                    isResidentialUnit = table.Column<bool>(type: "bit", nullable: false),
-                    agreedToGetUpdates = table.Column<bool>(type: "bit", nullable: false),
-                    totalSquareFootage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    city = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    conditionOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    des = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    floor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    houseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    immediate = table.Column<bool>(type: "bit", nullable: false),
-                    parking = table.Column<int>(type: "int", nullable: false),
-                    personName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    porch = table.Column<int>(type: "int", nullable: false),
-                    roomNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    totalFloorInBuilding = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    typeOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Apartments", x => x.apartmentId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -113,6 +71,55 @@ namespace asp.networkshoprealapppublic.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Apartments",
+                columns: table => new
+                {
+                    apartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    street = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    price = table.Column<double>(type: "float", nullable: true),
+                    hasAirConditioning = table.Column<bool>(type: "bit", nullable: false),
+                    hasWindowBars = table.Column<bool>(type: "bit", nullable: false),
+                    hasElevator = table.Column<bool>(type: "bit", nullable: false),
+                    hasKosherKitchen = table.Column<bool>(type: "bit", nullable: false),
+                    hasSolarHeater = table.Column<bool>(type: "bit", nullable: false),
+                    hasAccessibilityForDisabled = table.Column<bool>(type: "bit", nullable: false),
+                    isRenovated = table.Column<bool>(type: "bit", nullable: false),
+                    isSmartHome = table.Column<bool>(type: "bit", nullable: false),
+                    hasStorage = table.Column<bool>(type: "bit", nullable: false),
+                    hasCentralAirConditioning = table.Column<bool>(type: "bit", nullable: false),
+                    hasFurniture = table.Column<bool>(type: "bit", nullable: false),
+                    isResidentialUnit = table.Column<bool>(type: "bit", nullable: false),
+                    agreedToGetUpdates = table.Column<bool>(type: "bit", nullable: false),
+                    totalSquareFootage = table.Column<double>(type: "float", nullable: true),
+                    city = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    conditionOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    des = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    floor = table.Column<double>(type: "float", nullable: true),
+                    houseNumber = table.Column<double>(type: "float", nullable: true),
+                    immediate = table.Column<bool>(type: "bit", nullable: false),
+                    parking = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    personName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    porch = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    roomNumber = table.Column<double>(type: "float", nullable: true),
+                    totalFloorInBuilding = table.Column<double>(type: "float", nullable: true),
+                    typeOfProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    dateOfEntering = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    personId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Apartments", x => x.apartmentId);
+                    table.ForeignKey(
+                        name: "FK_Apartments_AspNetUsers_personId",
+                        column: x => x.personId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -200,6 +207,36 @@ namespace asp.networkshoprealapppublic.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "likedApartments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    likedApartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    personId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    apartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_likedApartments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_likedApartments_Apartments_apartmentId",
+                        column: x => x.apartmentId,
+                        principalTable: "Apartments",
+                        principalColumn: "apartmentId");
+                    table.ForeignKey(
+                        name: "FK_likedApartments_AspNetUsers_personId",
+                        column: x => x.personId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Apartments_personId",
+                table: "Apartments",
+                column: "personId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -238,14 +275,21 @@ namespace asp.networkshoprealapppublic.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_likedApartments_apartmentId",
+                table: "likedApartments",
+                column: "apartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_likedApartments_personId",
+                table: "likedApartments",
+                column: "personId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Apartments");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -262,7 +306,13 @@ namespace asp.networkshoprealapppublic.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "likedApartments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Apartments");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

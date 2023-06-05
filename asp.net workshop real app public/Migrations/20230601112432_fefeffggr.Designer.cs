@@ -12,8 +12,8 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    [Migration("20230521183624_firstcddcjjedde")]
-    partial class firstcddcjjedde
+    [Migration("20230601112432_fefeffggr")]
+    partial class fefeffggr
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,14 +176,17 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("conditionOfProperty")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("dateOfEntering")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("des")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("floor")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("floor")
+                        .HasColumnType("float");
 
                     b.Property<bool>("hasAccessibilityForDisabled")
                         .HasColumnType("bit");
@@ -212,8 +215,8 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<bool>("hasWindowBars")
                         .HasColumnType("bit");
 
-                    b.Property<string>("houseNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("houseNumber")
+                        .HasColumnType("float");
 
                     b.Property<bool>("immediate")
                         .HasColumnType("bit");
@@ -233,31 +236,36 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("parking")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("personName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("porch")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("price")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("price")
+                        .HasColumnType("float");
 
-                    b.Property<string>("roomNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("roomNumber")
+                        .HasColumnType("float");
 
                     b.Property<string>("street")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("totalFloorInBuilding")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalFloorInBuilding")
+                        .HasColumnType("float");
 
-                    b.Property<string>("totalSquareFootage")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalSquareFootage")
+                        .HasColumnType("float");
 
                     b.Property<string>("typeOfProperty")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("apartmentId");
+
+                    b.HasIndex("personId");
 
                     b.ToTable("Apartments");
                 });
@@ -335,6 +343,32 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("apartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("likedApartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("apartmentId");
+
+                    b.HasIndex("personId");
+
+                    b.ToTable("likedApartments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -384,6 +418,35 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Apartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany("Apartments")
+                        .HasForeignKey("personId");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.Apartment", "apartment")
+                        .WithMany()
+                        .HasForeignKey("apartmentId");
+
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany()
+                        .HasForeignKey("personId");
+
+                    b.Navigation("apartment");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.AppUser", b =>
+                {
+                    b.Navigation("Apartments");
                 });
 #pragma warning restore 612, 618
         }

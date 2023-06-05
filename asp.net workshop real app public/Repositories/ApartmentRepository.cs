@@ -1,6 +1,8 @@
 ﻿using asp.net_workshop_real_app_public.Data;
 using asp.net_workshop_real_app_public.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
 
@@ -8,7 +10,7 @@ namespace asp.net_workshop_real_app_public.Repositories
 {
     public class ApartmentRepository: IApartmentRepository
     {
-  
+   
           private readonly ApartementContext _context;
 
         public ApartmentRepository(ApartementContext context)
@@ -22,11 +24,10 @@ namespace asp.net_workshop_real_app_public.Repositories
         }
         public async Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email)
         {
-            ///need to handle if i do one to many or not 
+            var apartments = await _context.Apartments.Where(a=>a.person.Email==email).Include(a=>a.person).ToListAsync();
 
-            return null;
-            //var apartments = await _context.Apartments.Where().ToListAsync();
-            //return apartments;
+            return apartments;
+
         }
 
 
@@ -42,57 +43,163 @@ namespace asp.net_workshop_real_app_public.Repositories
 
             return apartments;
         }
-        public async Task<bool> toggleLikedApartment(likedApartment la, bool isLiked)
+        ///apartment id! צריך לקבל מהיוזר ואז אני אוכל למצוא את הדירה לעשות אובייקט חדש ולקשר!
+        public async Task<bool> toggleLikedApartment(bool isLiked, string email, Guid apartmentId)
         {
-            var existingLikedApartment = await _context.likedApartments.FirstOrDefaultAsync(a=>la.apartmentId==a.apartmentId&&la.email==a.email);
-
-            if (existingLikedApartment == null)
+            try
             {
-                await _context.likedApartments.AddAsync(la);
-            }
-            else
-            {
-                _context.likedApartments.Remove(existingLikedApartment);
-            }
+                var apartment = await _context.Apartments.SingleOrDefaultAsync(a => a.apartmentId == apartmentId);
+                var user = await _context.Users.SingleOrDefaultAsync(a => a.Email == email);
 
-            await _context.SaveChangesAsync();
-            return true;
+                if (isLiked)
+                {
+                    var isLikedApartmentAlready = await _context.likedApartments
+                        .SingleOrDefaultAsync(a => a.person.Id == user.Id && a.apartment.apartmentId == apartmentId);
+
+                    if (isLikedApartmentAlready != null)
+                    {
+                        // Apartment is already liked by the user
+                        return false;
+                    }
+
+                    var likedApartment = new likedApartment
+                    {
+                        likedApartmentId = Guid.NewGuid(),
+                        person = user,
+                        apartment = apartment
+                    };
+
+                    await _context.likedApartments.AddAsync(likedApartment);
+                }
+                else
+                {
+                    var likedApartmentToRemove = await _context.likedApartments
+                        .SingleOrDefaultAsync(a => a.person.Id == user.Id && a.apartment.apartmentId == apartmentId);
+
+                    if (likedApartmentToRemove != null)
+                    {
+                        _context.likedApartments.Remove(likedApartmentToRemove);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle or log the exception as needed
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
         }
 
-
-        public async Task<bool> addApartmentAsync(Apartment a)
+        public async Task<bool> removeApartmentAsync(Apartment a)
         {
+            var apartment = await _context.Apartments.FirstOrDefaultAsync(apartment => apartment.apartmentId == a.apartmentId);
+      
+             _context.Apartments.Remove(apartment);
+            await _context.SaveChangesAsync();
+            return true;
+        
+        }
+        public async Task<bool> addApartmentAsync(Apartment a,string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             a.apartmentId = Guid.NewGuid();
+            a.person=user;
             await _context.Apartments.AddAsync(a);
             int isSuccessToAdd = await _context.SaveChangesAsync();
 
             return isSuccessToAdd > 0;
         }
-        public async Task<List<Apartment>> SearchApartments(Dictionary<string, object> criteria)
+
+        public async Task<IEnumerable<dynamic>> GetMyLikedApartmentsAsync(string email)
         {
-            var apartments=await _context.Apartments.ToListAsync();
-            return  apartments.Where(apt =>
+            var likedApartments = await _context.likedApartments
+                .Include(a => a.apartment)
+                .Where(a => a.person.Email == email)
+                .Include(a=>a.apartment).ToListAsync();
+
+            return likedApartments;
+        }
+
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment)
+        {
+            Console.WriteLine("hello");
+
+                int counter = 0;
+            var apartments = await _context.Apartments.ToListAsync();
+            this.printObjectProperties(apartment);
+            return apartments.Where(a =>
             {
-                return criteria.Keys.All(key =>
+                if (counter < 1)
                 {
-                    if (criteria[key] is bool)
-                    {
-                        return (bool)apt.GetType().GetProperty(key)?.GetValue(apt) == (bool)criteria[key];
-                    }
-                    if (criteria[key] is int)
-                    {
-                        return apt.GetType().GetProperty(key)?.GetValue(apt) != null &&
-                               (int)apt.GetType().GetProperty(key)?.GetValue(apt) <= (int)criteria[key];
-                    }
-                    if (key != "apartmentId" && criteria[key] is string)
-                    {
-                        return apt.GetType().GetProperty(key)?.GetValue(apt)?.ToString()?.ToLower().Contains(criteria[key]?.ToString()?.ToLower()) ?? false;
-                    }
-                    return true;
-                });
-            }).ToList();
+                counter++;
+                this.printObjectProperties(a);
+
+                }
+                //this.printObjectProperties(a);
+                ////לשים סוגריים עגולים כדי למנוע שגיאות 
+                bool condition =(( a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture)&&
+                    //a.hasKosherKitchen == apaptment.hasKosherKitchen &&
+                    //a.hasCentralAirConditioning == apaptment.hasCentralAirConditioning &&
+                   ( (a.hasElevator == apartment.hasElevator )|| !apartment.hasElevator) &&
+                   (( a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning )&&
+                   ( (a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars )&&
+                    ((a.isRenovated == apartment.isRenovated) || !apartment.isRenovated )&&
+                    //a.isSmartHome == apaptment.isSmartHome &&
+                    ((a.hasStorage == apartment.hasStorage) || !apartment.hasStorage )&&
+                    //a.hasSolarHeater == apaptment.hasSolarHeater &&
+                    ((a.hasAccessibilityForDisabled == apartment.hasAccessibilityForDisabled) || !apartment.hasAccessibilityForDisabled) &&
+                    //a.isResidentialUnit == apaptment.isResidentialUnit &&
+                   ( (a.totalSquareFootage >= apartment.minSqm) || apartment.minSqm==0) &&
+                    ((a.totalSquareFootage <= apartment.maxSqm) || apartment.maxSqm == 0 )&&
+                    (a.floor >= apartment.minFloor || apartment.minFloor == 0) &&
+                    ( a.floor <= apartment.maxFloor || apartment.maxFloor == 0) &&
+                    ((a.price >= apartment.minPrice) || apartment.minPrice == 0 )&&
+                    ((a.price <= apartment.maxPrice) || apartment.maxPrice == 0) &&
+                    ((a.roomNumber >= apartment.minRooms)|| apartment.minRooms==0 )&&
+                    ((a.roomNumber <= apartment.maxRooms)|| apartment.maxRooms==0);
+
+                if (condition)
+                {
+                    Console.WriteLine($"Apartment: {a.apartmentId} meets the criteria");
+                }
+                else
+                    Console.WriteLine($"Apartment: {a.apartmentId}not meets the criteria");
+
+
+                return condition;
+            });
         }
 
 
+
+        //public string? conditionOfProperty { get; set; }
+        //public bool immediate { get; set; }
+        //public string? parking { get; set; }
+        //public string? personName { get; set; }
+        //public string? porch { get; set; }
+        //public double? totalFloorInBuilding { get; set; }
+        //public string? typeOfProperty { get; set; }
+        //public string? dateOfEntering { get; set; }
+
+        //public string? freeSearchText { get; set; }
+        public void printObjectProperties(object obj)
+    {
+        var type = obj.GetType();
+        var properties = type.GetProperties();
+
+        foreach (var property in properties)
+        {
+            var key = property.Name;
+            var value = property.GetValue(obj);
+
+            Console.WriteLine($"{key}: {value}");
+        }
     }
+
+
+    }
+   
 }

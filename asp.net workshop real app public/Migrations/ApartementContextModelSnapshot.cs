@@ -182,8 +182,8 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("floor")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("floor")
+                        .HasColumnType("float");
 
                     b.Property<bool>("hasAccessibilityForDisabled")
                         .HasColumnType("bit");
@@ -212,8 +212,8 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<bool>("hasWindowBars")
                         .HasColumnType("bit");
 
-                    b.Property<string>("houseNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("houseNumber")
+                        .HasColumnType("float");
 
                     b.Property<bool>("immediate")
                         .HasColumnType("bit");
@@ -233,31 +233,36 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("parking")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("personName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("porch")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("price")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("price")
+                        .HasColumnType("float");
 
-                    b.Property<string>("roomNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("roomNumber")
+                        .HasColumnType("float");
 
                     b.Property<string>("street")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("totalFloorInBuilding")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalFloorInBuilding")
+                        .HasColumnType("float");
 
-                    b.Property<string>("totalSquareFootage")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("totalSquareFootage")
+                        .HasColumnType("float");
 
                     b.Property<string>("typeOfProperty")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("apartmentId");
+
+                    b.HasIndex("personId");
 
                     b.ToTable("Apartments");
                 });
@@ -269,6 +274,13 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -282,6 +294,10 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HouseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -315,6 +331,10 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -343,13 +363,20 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("apartmentId")
+                    b.Property<Guid?>("apartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("likedApartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("personId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("apartmentId");
+
+                    b.HasIndex("personId");
 
                     b.ToTable("likedApartments");
                 });
@@ -403,6 +430,35 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Apartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany("Apartments")
+                        .HasForeignKey("personId");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
+                {
+                    b.HasOne("asp.net_workshop_real_app_public.Models.Apartment", "apartment")
+                        .WithMany()
+                        .HasForeignKey("apartmentId");
+
+                    b.HasOne("asp.net_workshop_real_app_public.Models.AppUser", "person")
+                        .WithMany()
+                        .HasForeignKey("personId");
+
+                    b.Navigation("apartment");
+
+                    b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.AppUser", b =>
+                {
+                    b.Navigation("Apartments");
                 });
 #pragma warning restore 612, 618
         }

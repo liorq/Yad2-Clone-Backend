@@ -1,12 +1,18 @@
-﻿namespace asp.net_workshop_real_app_public.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace asp.net_workshop_real_app_public.Models
 {
     public class Apartment
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid apartmentId { get; set; }
         public string? name { get; set; }
         public string? category { get; set; }
         public string? street { get; set; }
-        public string? price { get; set; }
+        public double? price { get; set; }
         public bool hasAirConditioning { get; set; }
         public bool hasWindowBars { get; set; }
         public bool hasElevator { get; set; }
@@ -20,20 +26,22 @@
         public bool hasFurniture { get; set; }
         public bool isResidentialUnit { get; set; }
         public bool agreedToGetUpdates { get; set; }
-        public string? totalSquareFootage { get; set; }
+        public double? totalSquareFootage { get; set; }
         public string? city { get; set; }
         public string? conditionOfProperty { get; set; }
         public string? des { get; set; }
         public string? email { get; set; }
-        public string? floor { get; set; }
-        public string? houseNumber { get; set; }
+        public double? floor { get; set; }
+        public double? houseNumber { get; set; }
         public bool  immediate { get; set; }
         public string? parking { get; set; }
         public string? personName { get; set; }
         public string? porch { get; set; }
-        public string? roomNumber { get; set; }
-        public string? totalFloorInBuilding { get; set; }
+        public double? roomNumber { get; set; }
+        public double? totalFloorInBuilding { get; set; }
         public string?   typeOfProperty { get; set; }
         public string? dateOfEntering { get; set; }
+
+        public AppUser? person { get; set; }
     }
 }

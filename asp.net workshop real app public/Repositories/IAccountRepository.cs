@@ -7,5 +7,9 @@ namespace asp.net_workshop_real_app_public.Repositories
     {
         Task<IdentityResult> SignUp(SignupModel signupModel);
         Task<string> Login(LoginModel loginModel);
+        public Task<bool> updateUserInfo(UserUpdateRequest user, string email);
+        public  Task<bool> getUserObject();
+
+        public string? getUserNameByToken();
     }
 }
