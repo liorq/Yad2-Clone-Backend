@@ -17,6 +17,22 @@ namespace asp.net_workshop_real_app_public.Repositories
         {
             _context = context;
         }
+
+
+        ///עובד על שני הפונקציות האלה 
+        public async Task<IEnumerable<ApartmentSearchQuery>> getAllMySearches(string email)
+        {
+            var user= await _context.Users.FirstOrDefaultAsync(u=>u.Email == email);
+            //var searches=await _context.searches.Where(s=>s.person == user).ToListAsync();
+            //return searches;
+            return null;
+        }
+        public async Task<IEnumerable<ApartmentSearchQuery>> removeMySearches(string email, ApartmentSearchQuery query)
+        {
+
+            //var searches = await _context.searches.Where(s => s.person == user).ToListAsync();
+            return null;
+        }
         public async Task<IEnumerable<Apartment>> GetAllapartmentsAsync()
         {
             var apartments = await _context.Apartments.ToListAsync();
@@ -123,11 +139,15 @@ namespace asp.net_workshop_real_app_public.Repositories
             return likedApartments;
         }
 
-        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment)
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment,string email)
         {
-            Console.WriteLine("hello");
+            ////add search to the data base
+            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==email);
+            apartment.person = user;
+            apartment.searchId= Guid.NewGuid();
+            //await _context.searches.AddAsync(apartment);
 
-                int counter = 0;
+            int counter = 0;
             var apartments = await _context.Apartments.ToListAsync();
             this.printObjectProperties(apartment);
             return apartments.Where(a =>

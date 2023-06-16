@@ -34,6 +34,7 @@ namespace asp.net_workshop_real_app_public.Repositories
                 UserName = signupModel.Email
             };
             var result = await _userManager.CreateAsync(user, signupModel.Password);
+
             return result;
         }
 
@@ -71,11 +72,12 @@ namespace asp.net_workshop_real_app_public.Repositories
             var decodedToken = handler.ReadJwtToken(token);
             return decodedToken?.Claims?.ToArray()[0]?.Value;
         }
-        public async Task<bool> getUserObject()
+   
+        public async Task<AppUser> getUserObject(string email)
         {
-            string email = getUserNameByToken();
+        
             var res = await _userManager.FindByEmailAsync(email);
-            return true;
+            return res;
         }
         private string NewToken(string email)
         {

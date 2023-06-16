@@ -41,7 +41,7 @@ namespace asp.net_workshop_real_app_public.Controllers
         public async Task<IActionResult> GetMyApartments()
         {
 
-            string email =  _accountRepository.getUserNameByToken();
+            string? email =  _accountRepository.getUserNameByToken();
                 var res = await _apartmentRepository.GetMyApartmentsAsync(email);
             if (res != null && res.Any())
             {
@@ -90,7 +90,7 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("")]
         public async Task<IActionResult> addApartment([FromBody] Apartment a)
         {
-            string email = _accountRepository.getUserNameByToken();
+            string? email = _accountRepository.getUserNameByToken();
 
             bool isAddSucced = await _apartmentRepository.addApartmentAsync(a, email);
             if (isAddSucced)
@@ -103,7 +103,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> addLikedApartment(Guid apartmentId, bool isLiked)
         {
-            string email = _accountRepository.getUserNameByToken();
+            string? email = _accountRepository.getUserNameByToken();
 
             bool isAddSucced = await _apartmentRepository.toggleLikedApartment(isLiked, email, apartmentId);
  
@@ -119,8 +119,9 @@ namespace asp.net_workshop_real_app_public.Controllers
         [HttpPost("SearchApartments")]
         public async Task<IActionResult> SearchApartments([FromBody] ApartmentSearchQuery apartmentSearchQuery)
         {
+            string? email = _accountRepository.getUserNameByToken();
 
-            var result = await _apartmentRepository.SearchApartments(apartmentSearchQuery);
+            var result = await _apartmentRepository.SearchApartments(apartmentSearchQuery, email);
 
             if (result != null && result.Any())
             {
@@ -129,18 +130,18 @@ namespace asp.net_workshop_real_app_public.Controllers
             return NotFound("Failed to get apartments");
         }
 
-        //[HttpGet("token")]
-        //public string? getUserNameByToken()
-        //{
-        //    var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        //    if (token == "")
-        //        return "you dont have token send";
+        [HttpGet("mySearches")]
 
-        //    var handler = new JwtSecurityTokenHandler();
-        //    var decodedToken = handler.ReadJwtToken(token);
-        //    return decodedToken?.Claims?.ToArray()[0]?.Value;
-        //}
-
+        public async Task<IActionResult> getAllMySearches()
+        {
+            string? email= _accountRepository.getUserNameByToken();
+            var res = await _apartmentRepository.getAllMySearches(email);
+            if (res != null && res.Any())
+            {
+                return Ok(res);
+            }
+            return BadRequest("No searches to display.");
+        }
 
     }
 }

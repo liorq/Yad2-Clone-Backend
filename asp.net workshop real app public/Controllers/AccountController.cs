@@ -28,7 +28,18 @@ namespace asp.net_workshop_real_app_public.Controllers
         }
 
 
+        [HttpGet("")]
+        public async Task<IActionResult> getUserObject()
+        {
+            string email = _accountRepository.getUserNameByToken();
 
+            var res = await _accountRepository.getUserObject(email);
+            if (res!=null)
+            {
+                return Ok(res);
+            }
+            return BadRequest();
+        }
 
 
 
