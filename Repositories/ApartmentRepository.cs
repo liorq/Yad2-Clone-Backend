@@ -1,9 +1,11 @@
 ﻿using asp.net_workshop_real_app_public.Data;
 using asp.net_workshop_real_app_public.Models;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace asp.net_workshop_real_app_public.Repositories
@@ -16,6 +18,22 @@ namespace asp.net_workshop_real_app_public.Repositories
         public ApartmentRepository(ApartementContext context)
         {
             _context = context;
+        }
+
+
+        ///עובד על שני הפונקציות האלה 
+        public async Task<IEnumerable<ApartmentSearchQuery>> getAllMySearches(string email)
+        {
+            var user= await _context.Users.FirstOrDefaultAsync(u=>u.Email == email);
+            //var searches=await _context.searches.Where(s=>s.person == user).ToListAsync();
+            //return searches;
+            return null;
+        }
+        public async Task<IEnumerable<ApartmentSearchQuery>> removeMySearches(string email, ApartmentSearchQuery query)
+        {
+
+            //var searches = await _context.searches.Where(s => s.person == user).ToListAsync();
+            return null;
         }
         public async Task<IEnumerable<Apartment>> GetAllapartmentsAsync()
         {
@@ -123,24 +141,43 @@ namespace asp.net_workshop_real_app_public.Repositories
             return likedApartments;
         }
 
-        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment)
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment,string email)
         {
-            Console.WriteLine("hello");
+            ////add search to the data base
+            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==email);
+            apartment.person = user;
+            apartment.searchId= Guid.NewGuid();
+            //await _context.searches.AddAsync(apartment);
 
-                int counter = 0;
+            int counter = 0;
             var apartments = await _context.Apartments.ToListAsync();
             this.printObjectProperties(apartment);
+            //foreach (var item in apartment.arrayOfTypeProperty)
+            //{
+            //    Console.WriteLine(item);
+            //}
             return apartments.Where(a =>
             {
                 if (counter < 1)
                 {
                 counter++;
-                this.printObjectProperties(a);
+
+                //this.printObjectProperties(a);
 
                 }
+                Console.WriteLine(a.city);
                 //this.printObjectProperties(a);
                 ////לשים סוגריים עגולים כדי למנוע שגיאות 
-                bool condition =(( a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture)&&
+                  Console.WriteLine(a.city==apartment.city);
+                /////////////////////////בדיקה האם הסוג נכס נמצא בבקשה
+                ///שורה שבבדיקה
+                bool condition =
+                (a.des != null && a.des.Contains(apartment.des) )&&
+                (apartment.arrayOfTypeProperty.Any(type => type == a.typeOfProperty )&&
+                //a.city.Trim() == apartment.city.Trim()
+                ( a.city == apartment.city|| a.city =="")
+
+                && (( a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture))&&
                     //a.hasKosherKitchen == apaptment.hasKosherKitchen &&
                     //a.hasCentralAirConditioning == apaptment.hasCentralAirConditioning &&
                    ( (a.hasElevator == apartment.hasElevator )|| !apartment.hasElevator) &&
