@@ -156,6 +156,7 @@ namespace asp.net_workshop_real_app_public.Repositories
             //{
             //    Console.WriteLine(item);
             //}
+            Console.WriteLine(apartment.des);
             return apartments.Where(a =>
             {
                 if (counter < 1)
@@ -165,14 +166,24 @@ namespace asp.net_workshop_real_app_public.Repositories
                 //this.printObjectProperties(a);
 
                 }
-                Console.WriteLine(a.city);
+                int number = 0;
+                if (a.des==null)
+                {
+                    return false;
+                }
+                foreach (var item in a.des.Split(' '))
+                {
+                    Console.WriteLine($"{number}: {item}");
+                    number++;
+                }
+                //Console.WriteLine(a.des.Split(" "));
                 //this.printObjectProperties(a);
                 ////לשים סוגריים עגולים כדי למנוע שגיאות 
-                  Console.WriteLine(a.city==apartment.city);
+                //Console.WriteLine(a.city==apartment.city);
                 /////////////////////////בדיקה האם הסוג נכס נמצא בבקשה
                 ///שורה שבבדיקה
                 bool condition =
-                (a.des != null && a.des.Contains(apartment.des) )&&
+                (a.des != null && apartment.des != null && a.des.Split(" ").Any(item => item.Trim().Equals(apartment.des.Trim()))) &&
                 (apartment.arrayOfTypeProperty.Any(type => type == a.typeOfProperty )&&
                 //a.city.Trim() == apartment.city.Trim()
                 ( a.city == apartment.city|| a.city =="")
@@ -212,16 +223,7 @@ namespace asp.net_workshop_real_app_public.Repositories
 
 
 
-        //public string? conditionOfProperty { get; set; }
-        //public bool immediate { get; set; }
-        //public string? parking { get; set; }
-        //public string? personName { get; set; }
-        //public string? porch { get; set; }
-        //public double? totalFloorInBuilding { get; set; }
-        //public string? typeOfProperty { get; set; }
-        //public string? dateOfEntering { get; set; }
-
-        //public string? freeSearchText { get; set; }
+    
         public void printObjectProperties(object obj)
     {
         var type = obj.GetType();
