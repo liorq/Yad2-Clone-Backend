@@ -75,6 +75,17 @@ namespace asp.net_workshop_real_app_public.Controllers
         }
 
 
+        [HttpPost("myApartments/likedApartments/{likedApartmentId}/{comment}")]
+        public async Task<IActionResult> addCommentToLikedApartment(Guid likedApartmentId,string comment)
+        {
+           
+            var res = await _apartmentRepository.addCommentToLikedApartment(likedApartmentId, comment);
+            if (res)
+            return Ok(res);
+            else
+            return BadRequest("faild to update");
+        }
+
         [HttpGet("{page}")]
 
         public async Task<IActionResult> GetAllRangeApartments(int page)
@@ -129,6 +140,21 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("Failed to get apartments");
         }
+
+        [HttpGet("images/{apartmentId}")]
+
+        public async Task<IActionResult> getAllApatmentImages(Guid apartmentId)
+        {
+            //string? email = _accountRepository.getUserNameByToken();
+            var res = await _apartmentRepository.getImageString(apartmentId);
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            return BadRequest("No images to display.");
+        }
+
+
 
         [HttpGet("mySearches")]
 

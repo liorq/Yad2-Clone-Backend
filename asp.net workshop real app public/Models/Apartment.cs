@@ -29,7 +29,7 @@ namespace asp.net_workshop_real_app_public.Models
         public double? totalSquareFootage { get; set; }
         public string? city { get; set; }
         public string? conditionOfProperty { get; set; }
-        public string? des { get; set; }
+        public string? des { get; set; } = "";
         public string? email { get; set; }
         public double? floor { get; set; }
         public double? houseNumber { get; set; }
@@ -43,5 +43,7 @@ namespace asp.net_workshop_real_app_public.Models
         public string? dateOfEntering { get; set; }
         public string? comment { get; set; }
         public AppUser? person { get; set; }
+        [NotMapped]
+        public List<string>? pics { get; set; }
     }
 }

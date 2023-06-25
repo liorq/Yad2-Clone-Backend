@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using asp.net_workshop_real_app_public.Data;
 
@@ -11,9 +12,11 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    partial class ApartementContextModelSnapshot : ModelSnapshot
+    [Migration("20230620075302_h11")]
+    partial class h11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,26 +356,6 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Pic", b =>
-                {
-                    b.Property<Guid>("picId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("apartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("picId");
-
-                    b.HasIndex("apartmentId");
-
-                    b.ToTable("Pics");
-                });
-
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>
                 {
                     b.Property<int>("Id")
@@ -383,9 +366,6 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     b.Property<Guid?>("apartmentId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("comment")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("likedApartmentId")
                         .HasColumnType("uniqueidentifier");
@@ -460,17 +440,6 @@ namespace asp.networkshoprealapppublic.Migrations
                         .HasForeignKey("personId");
 
                     b.Navigation("person");
-                });
-
-            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Pic", b =>
-                {
-                    b.HasOne("asp.net_workshop_real_app_public.Models.Apartment", "apartment")
-                        .WithMany()
-                        .HasForeignKey("apartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("apartment");
                 });
 
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.likedApartment", b =>

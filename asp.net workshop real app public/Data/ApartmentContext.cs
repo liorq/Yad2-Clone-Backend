@@ -13,6 +13,6 @@ namespace asp.net_workshop_real_app_public.Data
 
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<likedApartment> likedApartments { get; set; }
-
+        public DbSet<Pic> Pics { get; set; }
     }
 }

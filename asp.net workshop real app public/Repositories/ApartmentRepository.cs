@@ -1,9 +1,11 @@
 ﻿using asp.net_workshop_real_app_public.Data;
 using asp.net_workshop_real_app_public.Models;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace asp.net_workshop_real_app_public.Repositories
@@ -123,12 +125,31 @@ namespace asp.net_workshop_real_app_public.Repositories
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             a.apartmentId = Guid.NewGuid();
             a.person=user;
+            /////
+            if (a.pics != null)
+            {
+             foreach(var item in a.pics)
+            {
+                Pic pic= new Pic();
+                pic.picId = Guid.NewGuid();
+                pic.value = item;
+                pic.apartment = a;
+            await _context.Pics.AddAsync(pic);
+            }
+            }
+
             await _context.Apartments.AddAsync(a);
             int isSuccessToAdd = await _context.SaveChangesAsync();
 
             return isSuccessToAdd > 0;
         }
+        public async Task<IEnumerable<Pic>> getImageString(Guid apartmentId)
+        {
+           var apartment=await _context.Apartments.FirstOrDefaultAsync(a=>a.apartmentId== apartmentId);
+            var pics = await _context.Pics.Include(a => a.apartment).Where(a=>a.apartment== apartment).ToListAsync();
 
+            return pics;
+        }
         public async Task<IEnumerable<dynamic>> GetMyLikedApartmentsAsync(string email)
         {
             var likedApartments = await _context.likedApartments
@@ -138,56 +159,65 @@ namespace asp.net_workshop_real_app_public.Repositories
 
             return likedApartments;
         }
-
-        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment,string email)
+        public async Task<bool> addCommentToLikedApartment(Guid likedApartmentId,string comment)
         {
-            ////add search to the data base
-            var user = await _context.Users.FirstOrDefaultAsync(u=>u.Email==email);
+            var likedApatment = await _context.likedApartments.FirstOrDefaultAsync(la => la.likedApartmentId == likedApartmentId);
+            if (likedApatment != null)
+            {
+            likedApatment.comment = comment;
+             await _context.SaveChangesAsync();
+              return true;
+            }
+            return false;
+        }
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment, string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             apartment.person = user;
-            apartment.searchId= Guid.NewGuid();
-            //await _context.searches.AddAsync(apartment);
+            apartment.searchId = Guid.NewGuid();
 
             int counter = 0;
             var apartments = await _context.Apartments.ToListAsync();
             this.printObjectProperties(apartment);
+
+            Console.WriteLine(apartment.des);
+
             return apartments.Where(a =>
             {
                 if (counter < 1)
                 {
-                counter++;
-                this.printObjectProperties(a);
-
+                    counter++;
+                     this.printObjectProperties(a);
                 }
-                //this.printObjectProperties(a);
-                ////לשים סוגריים עגולים כדי למנוע שגיאות 
-                bool condition =(( a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture)&&
-                    //a.hasKosherKitchen == apaptment.hasKosherKitchen &&
-                    //a.hasCentralAirConditioning == apaptment.hasCentralAirConditioning &&
-                   ( (a.hasElevator == apartment.hasElevator )|| !apartment.hasElevator) &&
-                   (( a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning )&&
-                   ( (a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars )&&
-                    ((a.isRenovated == apartment.isRenovated) || !apartment.isRenovated )&&
-                    //a.isSmartHome == apaptment.isSmartHome &&
-                    ((a.hasStorage == apartment.hasStorage) || !apartment.hasStorage )&&
-                    //a.hasSolarHeater == apaptment.hasSolarHeater &&
-                    ((a.hasAccessibilityForDisabled == apartment.hasAccessibilityForDisabled) || !apartment.hasAccessibilityForDisabled) &&
-                    //a.isResidentialUnit == apaptment.isResidentialUnit &&
-                   ( (a.totalSquareFootage >= apartment.minSqm) || apartment.minSqm==0) &&
-                    ((a.totalSquareFootage <= apartment.maxSqm) || apartment.maxSqm == 0 )&&
-                    (a.floor >= apartment.minFloor || apartment.minFloor == 0) &&
-                    ( a.floor <= apartment.maxFloor || apartment.maxFloor == 0) &&
-                    ((a.price >= apartment.minPrice) || apartment.minPrice == 0 )&&
-                    ((a.price <= apartment.maxPrice) || apartment.maxPrice == 0) &&
-                    ((a.roomNumber >= apartment.minRooms)|| apartment.minRooms==0 )&&
-                    ((a.roomNumber <= apartment.maxRooms)|| apartment.maxRooms==0);
+
+                bool condition = 
+                ((apartment.freeSearchText == null || a.des == null) || (a.des.Split(' ').Any(item => item.Trim().Equals(apartment.freeSearchText?.Trim()))))
+                && (apartment.arrayOfTypeProperty.Any(type => type == a.typeOfProperty)
+                && (a.city == null || a.city == "" || a.city.Trim() == apartment.city.Trim())
+                && ((a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture))
+                && ((a.hasElevator == apartment.hasElevator) || !apartment.hasElevator)
+                && ((a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning)
+                && ((a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars)
+                    && ((a.isRenovated == apartment.isRenovated) || !apartment.isRenovated)
+                    && ((a.hasStorage == apartment.hasStorage) || !apartment.hasStorage)
+                    && ((a.hasAccessibilityForDisabled == apartment.hasAccessibilityForDisabled) || !apartment.hasAccessibilityForDisabled)
+                    && ((a.totalSquareFootage >= apartment.minSqm) || apartment.minSqm == 0)
+                    && ((a.totalSquareFootage <= apartment.maxSqm) || apartment.maxSqm == 0)
+                    && (a.floor >= apartment.minFloor || apartment.minFloor == 0)
+                    && (a.floor <= apartment.maxFloor || apartment.maxFloor == 0)
+                    && ((a.price >= apartment.minPrice) || apartment.minPrice == 0)
+                    && ((a.price <= apartment.maxPrice) || apartment.maxPrice == 0)
+                    && ((a.roomNumber >= apartment.minRooms) || apartment.minRooms == 0)
+                    && ((a.roomNumber <= apartment.maxRooms) || apartment.maxRooms == 0);
 
                 if (condition)
                 {
                     Console.WriteLine($"Apartment: {a.apartmentId} meets the criteria");
                 }
                 else
-                    Console.WriteLine($"Apartment: {a.apartmentId}not meets the criteria");
-
+                {
+                    Console.WriteLine($"Apartment: {a.apartmentId} does not meet the criteria");
+                }
 
                 return condition;
             });
@@ -195,16 +225,8 @@ namespace asp.net_workshop_real_app_public.Repositories
 
 
 
-        //public string? conditionOfProperty { get; set; }
-        //public bool immediate { get; set; }
-        //public string? parking { get; set; }
-        //public string? personName { get; set; }
-        //public string? porch { get; set; }
-        //public double? totalFloorInBuilding { get; set; }
-        //public string? typeOfProperty { get; set; }
-        //public string? dateOfEntering { get; set; }
 
-        //public string? freeSearchText { get; set; }
+
         public void printObjectProperties(object obj)
     {
         var type = obj.GetType();
