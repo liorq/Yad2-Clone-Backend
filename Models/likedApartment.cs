@@ -9,6 +9,6 @@ namespace asp.net_workshop_real_app_public.Models
         public AppUser? person { get; set; }
         public Apartment? apartment { get; set; }
 
-
+        public string? comment { get; set; } = "";
     }
 }

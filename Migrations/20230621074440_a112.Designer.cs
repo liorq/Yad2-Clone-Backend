@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using asp.net_workshop_real_app_public.Data;
 
@@ -11,9 +12,11 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    partial class ApartementContextModelSnapshot : ModelSnapshot
+    [Migration("20230621074440_a112")]
+    partial class a112
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,9 +387,6 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<Guid?>("apartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("comment")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("likedApartmentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -465,7 +465,7 @@ namespace asp.networkshoprealapppublic.Migrations
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Pic", b =>
                 {
                     b.HasOne("asp.net_workshop_real_app_public.Models.Apartment", "apartment")
-                        .WithMany()
+                        .WithMany("pics")
                         .HasForeignKey("apartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -486,6 +486,11 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Navigation("apartment");
 
                     b.Navigation("person");
+                });
+
+            modelBuilder.Entity("asp.net_workshop_real_app_public.Models.Apartment", b =>
+                {
+                    b.Navigation("pics");
                 });
 
             modelBuilder.Entity("asp.net_workshop_real_app_public.Models.AppUser", b =>

@@ -43,6 +43,7 @@ namespace asp.net_workshop_real_app_public.Models
         public string? dateOfEntering { get; set; }
         public string? comment { get; set; }
         public AppUser? person { get; set; }
-
+        [NotMapped]
+        public List<string>? pics { get; set; }
     }
 }

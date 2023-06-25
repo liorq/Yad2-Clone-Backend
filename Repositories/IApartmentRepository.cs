@@ -12,12 +12,12 @@ namespace asp.net_workshop_real_app_public.Repositories
         public  Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery criteria, string email);
 
         public Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email);
-
+        public Task<bool> addCommentToLikedApartment(Guid likedApartmentId, string comment);
         public  Task<bool> removeApartmentAsync(Apartment a);
         public Task<IEnumerable<dynamic>> GetMyLikedApartmentsAsync(string email);
         public void printObjectProperties(object obj);
         public Task<IEnumerable<ApartmentSearchQuery>> getAllMySearches(string email);
 
-     
+        public Task<IEnumerable<Pic>> getImageString(Guid apartmentId);
     }
 }

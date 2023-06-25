@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using asp.net_workshop_real_app_public.Data;
 
@@ -11,9 +12,11 @@ using asp.net_workshop_real_app_public.Data;
 namespace asp.networkshoprealapppublic.Migrations
 {
     [DbContext(typeof(ApartementContext))]
-    partial class ApartementContextModelSnapshot : ModelSnapshot
+    [Migration("20230621070807_a1")]
+    partial class a1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,10 +365,6 @@ namespace asp.networkshoprealapppublic.Migrations
                     b.Property<Guid>("apartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("picId");
 
                     b.HasIndex("apartmentId");
@@ -383,9 +382,6 @@ namespace asp.networkshoprealapppublic.Migrations
 
                     b.Property<Guid?>("apartmentId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("comment")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("likedApartmentId")
                         .HasColumnType("uniqueidentifier");
