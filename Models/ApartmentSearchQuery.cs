@@ -7,7 +7,7 @@ namespace asp.net_workshop_real_app_public.Models
     {
       
         public Guid searchId { get; set; }
-        public string? freeSearchText { get; set; }
+        public string? freeSearchText { get; set; } = "";
 
         public double? minFloor { get; set; } = 0;
         public double? minSqm { get; set; } = 0;

@@ -128,6 +128,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 
 
         [HttpPost("SearchApartments")]
+   
         public async Task<IActionResult> SearchApartments([FromBody] ApartmentSearchQuery apartmentSearchQuery)
         {
             string? email = _accountRepository.getUserNameByToken();

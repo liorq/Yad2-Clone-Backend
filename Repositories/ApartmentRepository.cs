@@ -1,7 +1,9 @@
 ﻿using asp.net_workshop_real_app_public.Data;
 using asp.net_workshop_real_app_public.Models;
+using asp.networkshoprealapppublic.Migrations;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -170,41 +172,45 @@ namespace asp.net_workshop_real_app_public.Repositories
             }
             return false;
         }
-        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment, string email)
+        public async Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery apartment, string? email)
         {
+            if (apartment == null)
+            {
+                return null;
+            }
+
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             apartment.person = user;
             apartment.searchId = Guid.NewGuid();
 
-            int counter = 0;
             var apartments = await _context.Apartments.ToListAsync();
-            this.printObjectProperties(apartment);
-
-            Console.WriteLine(apartment.des);
 
             return apartments.Where(a =>
             {
-                if (counter < 1)
-                {
-                    counter++;
-                     this.printObjectProperties(a);
-                }
+                //string? wordToFind = a.des;
 
-                bool condition = 
-                ((apartment.freeSearchText == null || a.des == null) || (a.des.Split(' ').Any(item => item.Trim().Equals(apartment.freeSearchText?.Trim()))))
-                && (apartment.arrayOfTypeProperty.Any(type => type == a.typeOfProperty)
-                && (a.city == null || a.city == "" || a.city.Trim() == apartment.city.Trim())
-                && ((a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture))
-                && ((a.hasElevator == apartment.hasElevator) || !apartment.hasElevator)
-                && ((a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning)
-                && ((a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars)
+                //bool containsWord = a.Contains(apartment.freeSearchText);
+                this.printObjectProperties(a);
+                Console.WriteLine("result :"+apartment.freeSearchText+" "+ a.des);
+                bool containsWord = a.des.IndexOf(apartment.des.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+
+                bool condition =
+                    ((string.IsNullOrEmpty(apartment.des)|| string.IsNullOrEmpty(a.des ) || containsWord))
+                    && (apartment.arrayOfTypeProperty.Contains(a.typeOfProperty))
+
+                    && (string.IsNullOrEmpty(apartment.city) || a.city?.Trim() == apartment.city.Trim())
+
+                    && ((a.hasFurniture == apartment.hasFurniture) || !apartment.hasFurniture)
+                    && ((a.hasElevator == apartment.hasElevator) || !apartment.hasElevator)
+                    && ((a.hasAirConditioning == apartment.hasAirConditioning) || !apartment.hasAirConditioning)
+                    && ((a.hasWindowBars == apartment.hasWindowBars) || !apartment.hasWindowBars)
                     && ((a.isRenovated == apartment.isRenovated) || !apartment.isRenovated)
                     && ((a.hasStorage == apartment.hasStorage) || !apartment.hasStorage)
                     && ((a.hasAccessibilityForDisabled == apartment.hasAccessibilityForDisabled) || !apartment.hasAccessibilityForDisabled)
                     && ((a.totalSquareFootage >= apartment.minSqm) || apartment.minSqm == 0)
                     && ((a.totalSquareFootage <= apartment.maxSqm) || apartment.maxSqm == 0)
-                    && (a.floor >= apartment.minFloor || apartment.minFloor == 0)
-                    && (a.floor <= apartment.maxFloor || apartment.maxFloor == 0)
+                    && ((a.floor >= apartment.minFloor) || apartment.minFloor == 0)
+                    && ((a.floor <= apartment.maxFloor) || apartment.maxFloor == 0)
                     && ((a.price >= apartment.minPrice) || apartment.minPrice == 0)
                     && ((a.price <= apartment.maxPrice) || apartment.maxPrice == 0)
                     && ((a.roomNumber >= apartment.minRooms) || apartment.minRooms == 0)
@@ -222,7 +228,6 @@ namespace asp.net_workshop_real_app_public.Repositories
                 return condition;
             });
         }
-
 
 
 

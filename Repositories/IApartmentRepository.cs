@@ -9,7 +9,7 @@ namespace asp.net_workshop_real_app_public.Repositories
         public Task<bool>  addApartmentAsync(Apartment a, string email);
         public Task<IEnumerable<Apartment>> GetAllRangeApartments(int page);
         public Task<bool> toggleLikedApartment(bool isLiked, string email, Guid apartmentId);
-        public  Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery criteria, string email);
+        public  Task<IEnumerable<Apartment>> SearchApartments(ApartmentSearchQuery criteria, string? email);
 
         public Task<IEnumerable<Apartment>> GetMyApartmentsAsync(string email);
         public Task<bool> addCommentToLikedApartment(Guid likedApartmentId, string comment);
