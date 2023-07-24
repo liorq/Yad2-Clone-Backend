@@ -21,9 +21,7 @@ namespace asp.net_workshop_real_app_public.Controllers
             _apartmentRepository = apartmentRepository;
             _httpContextAccessor = httpContextAccessor;
             _accountRepository = accountRepository;
-
-        }
-
+                }
         [HttpGet("")]
 
         public async Task<IActionResult> GetAllapartments()
@@ -35,7 +33,6 @@ namespace asp.net_workshop_real_app_public.Controllers
             }
             return NotFound("No apartments to display.");
         }
-
         [HttpGet("myApartments")]
 
         public async Task<IActionResult> GetMyApartments()
@@ -76,9 +73,10 @@ namespace asp.net_workshop_real_app_public.Controllers
 
 
         [HttpPost("myApartments/likedApartments/{likedApartmentId}/{comment}")]
+        //[Authorize(Roles ="admin")]
         public async Task<IActionResult> addCommentToLikedApartment(Guid likedApartmentId,string comment)
         {
-           
+
             var res = await _apartmentRepository.addCommentToLikedApartment(likedApartmentId, comment);
             if (res)
             return Ok(res);
@@ -90,6 +88,7 @@ namespace asp.net_workshop_real_app_public.Controllers
 
         public async Task<IActionResult> GetAllRangeApartments(int page)
         {
+            
             var res = await _apartmentRepository.GetAllRangeApartments(page);
             if (res != null && res.Any())
             {

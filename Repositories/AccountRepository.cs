@@ -43,6 +43,8 @@ namespace asp.net_workshop_real_app_public.Repositories
 
         public async Task<string> Login(LoginModel loginModel)
         {
+
+             
             var result = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false, false);
             if (!result.Succeeded)
             {
@@ -87,8 +89,12 @@ namespace asp.net_workshop_real_app_public.Repositories
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+               
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                //new Claim(ClaimTypes.Role, "ef")
+
             };
+            ///מצפין את הסיקריט שם 
             var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
 
             var token = new JwtSecurityToken(
@@ -98,7 +104,8 @@ namespace asp.net_workshop_real_app_public.Repositories
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
                 );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+           return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
 
 

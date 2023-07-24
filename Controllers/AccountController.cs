@@ -29,6 +29,9 @@ namespace asp.net_workshop_real_app_public.Controllers
 
 
         [HttpGet("")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(406)]
+
         public async Task<IActionResult> getUserObject()
         {
             string email = _accountRepository.getUserNameByToken();
@@ -62,9 +65,14 @@ namespace asp.net_workshop_real_app_public.Controllers
             var res = await _accountRepository.updateUserInfo(user,email);
             if (res)
             {
-                return Ok();
+                return Ok(true);
             }
-            return BadRequest("cannot chage");
+            return BadRequest(false);
         }
+
+
+
+
+
     }
 }

@@ -7,6 +7,7 @@ namespace asp.net_workshop_real_app_public.Models
     {
       
         public Guid searchId { get; set; }
+
         public string? freeSearchText { get; set; } = "";
 
         public double? minFloor { get; set; } = 0;
@@ -17,7 +18,6 @@ namespace asp.net_workshop_real_app_public.Models
         public double? maxRooms { get; set; } = 0;
         public double? maxFloor { get; set; } = 0;
         public double? maxSqm { get; set; } = 0;
-        //public string[]? arrayOfTypeProperty { get; set; } =null;
         public string[] arrayOfTypeProperty { get; set; } = new string[]
                 {
             "כל סוגי הנכסים",
@@ -47,7 +47,7 @@ namespace asp.net_workshop_real_app_public.Models
                 };
 
 
-        public AppUser? person { get; set; }
+        public virtual AppUser? person { get; set; }
   
 
     }

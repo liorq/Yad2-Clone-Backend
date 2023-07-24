@@ -15,7 +15,7 @@ namespace asp.net_workshop_real_app_public.Models
         public DateTime? BirthDate { get; set; }
 
         public string? HouseNumber { get; set; }
-        public ICollection<Apartment>? Apartments{ get; set; }
+        public virtual ICollection<Apartment>? Apartments{ get; set; }
 
     }
 }

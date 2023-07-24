@@ -23,7 +23,6 @@ namespace asp.net_workshop_real_app_public.Repositories
         }
 
 
-        ///עובד על שני הפונקציות האלה 
         public async Task<IEnumerable<ApartmentSearchQuery>> getAllMySearches(string email)
         {
             var user= await _context.Users.FirstOrDefaultAsync(u=>u.Email == email);
@@ -63,7 +62,6 @@ namespace asp.net_workshop_real_app_public.Repositories
 
             return apartments;
         }
-        ///apartment id! צריך לקבל מהיוזר ואז אני אוכל למצוא את הדירה לעשות אובייקט חדש ולקשר!
         public async Task<bool> toggleLikedApartment(bool isLiked, string email, Guid apartmentId)
         {
             try
@@ -78,7 +76,6 @@ namespace asp.net_workshop_real_app_public.Repositories
 
                     if (isLikedApartmentAlready != null)
                     {
-                        // Apartment is already liked by the user
                         return false;
                     }
 
@@ -107,7 +104,6 @@ namespace asp.net_workshop_real_app_public.Repositories
             }
             catch (Exception ex)
             {
-                // Handle or log the exception as needed
                 Console.WriteLine($"An error occurred: {ex.Message}");
                 return false;
             }
@@ -187,14 +183,16 @@ namespace asp.net_workshop_real_app_public.Repositories
 
             return apartments.Where(a =>
             {
-                //string? wordToFind = a.des;
-
-                //bool containsWord = a.Contains(apartment.freeSearchText);
+        
                 this.printObjectProperties(a);
                 Console.WriteLine("result :"+apartment.freeSearchText+" "+ a.des);
                 bool containsWord = a.des.IndexOf(apartment.des.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
 
                 bool condition =
+                 
+                ( apartment.dateOfEntering==null||(DateTime.Parse(a.dateOfEntering) <= DateTime.Parse(apartment.dateOfEntering)))
+                &&
+
                     ((string.IsNullOrEmpty(apartment.des)|| string.IsNullOrEmpty(a.des ) || containsWord))
                     && (apartment.arrayOfTypeProperty.Contains(a.typeOfProperty))
 

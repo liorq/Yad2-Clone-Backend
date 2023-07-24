@@ -6,6 +6,7 @@ namespace asp.net_workshop_real_app_public.Models
 {
     public class Apartment
     {
+  
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid apartmentId { get; set; }
@@ -20,6 +21,7 @@ namespace asp.net_workshop_real_app_public.Models
         public bool hasSolarHeater { get; set; }
         public bool hasAccessibilityForDisabled { get; set; }
         public bool isRenovated { get; set; }
+        public bool isPromoted { get; set; }
         public bool isSmartHome { get; set; }
         public bool hasStorage { get; set; }
         public bool hasCentralAirConditioning { get; set; }
@@ -42,8 +44,8 @@ namespace asp.net_workshop_real_app_public.Models
         public string?   typeOfProperty { get; set; }
         public string? dateOfEntering { get; set; }
         public string? comment { get; set; }
-        public AppUser? person { get; set; }
+        public virtual AppUser? person { get; set; }
         [NotMapped]
-        public List<string>? pics { get; set; }
+        public virtual List<string>? pics { get; set; }
     }
 }

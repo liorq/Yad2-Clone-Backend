@@ -2,8 +2,14 @@ using asp.net_workshop_real_app_public.Data;
 using asp.net_workshop_real_app_public.Models;
 using asp.net_workshop_real_app_public.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -18,10 +24,16 @@ namespace asp.net_workshop_real_app_public
             // Add services to the container.
             builder.Services.AddDbContext<ApartementContext>(
                 options => options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("WorkshopRealAPIPublic")));
+                    builder.Configuration.GetConnectionString("WorkshopRealAPIPublic"))
+                );
+
+
+
+
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApartementContext>()
                 .AddDefaultTokenProviders();
+
             builder.Services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,7 +42,7 @@ namespace asp.net_workshop_real_app_public
             }).AddJwtBearer(opt =>
             {
                 opt.SaveToken = true;
-                opt.RequireHttpsMetadata = false;
+                opt.RequireHttpsMetadata = true;
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
@@ -47,9 +59,11 @@ namespace asp.net_workshop_real_app_public
             builder.Services.AddTransient<IApartmentRepository, ApartmentRepository>();
 
             builder.Services.AddTransient<IAccountRepository, AccountRepository>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
+
             builder.Services.AddCors(option =>
             {
                 option.AddDefaultPolicy(builder =>
@@ -58,9 +72,9 @@ namespace asp.net_workshop_real_app_public
                 });
             });
 
-            var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            var app = builder.Build();
+          
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -68,15 +82,23 @@ namespace asp.net_workshop_real_app_public
             }
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            
             app.UseCors();
             app.UseAuthentication();
+         
+
             app.UseAuthorization();
+            app.UseHttpLogging();
 
-
+         
             app.MapControllers();
 
             app.Run();
         }
     }
+
+
 }
